@@ -1,0 +1,16 @@
+Number of images :  12568
+###############################
+Average stats
+Avg H :  256.0
+Avg W :  1600.0
+Avg C :  3.0
+###############################
+Min stats
+Min H :  256
+Min W :  1600
+Min C :  3
+###############################
+Max stats
+Max H :  256
+Max W :  1600
+Max C :  3
