@@ -6,6 +6,53 @@ from pathlib import Path
 from PIL import Image
 from tqdm import tqdm
 
+def get_pixel_coord(pix, num_rows):
+    row = (pix % num_rows) 
+    col = (pix // num_rows)
+    return row, col
+
+def generate_mask(rle, height=256, width=1600):
+    mask = np.zeros((height, width), dtype=np.uint8)
+    rle = [int(val) for val in rle.split(' ')]
+    iter_rle = iter(rle)
+    for val in iter_rle:
+        start_pixel = val
+        length = next(iter_rle)
+        for i in range(length):
+            pix = start_pixel - 1 + i
+            h, w = get_pixel_coord(pix, height)
+            mask[h, w] = 1
+    return mask
+
+def mask2rle(img):
+    ## Taken from https://www.kaggle.com/paulorzp/rle-functions-run-lenght-encode-decode
+    '''
+    img: numpy array, 1 - mask, 0 - background
+    Returns run length as string formated
+    '''
+    pixels= img.T.flatten()
+    pixels = np.concatenate([[0], pixels, [0]])
+    runs = np.where(pixels[1:] != pixels[:-1])[0] + 1
+    runs[1::2] -= runs[::2]
+    return ' '.join(str(x) for x in runs)
+ 
+def rle2mask(mask_rle, shape=(1600,256)):
+    ## Taken from https://www.kaggle.com/paulorzp/rle-functions-run-lenght-encode-decode
+    '''
+    mask_rle: run-length as string formated (start length)
+    shape: (width,height) of array to return 
+    Returns numpy array, 1 - mask, 0 - background
+
+    '''
+    s = mask_rle.split()
+    starts, lengths = [np.asarray(x, dtype=int) for x in (s[0:][::2], s[1:][::2])]
+    starts -= 1
+    ends = starts + lengths
+    img = np.zeros(shape[0]*shape[1], dtype=np.uint8)
+    for lo, hi in zip(starts, ends):
+        img[lo:hi] = 1
+    return img.reshape(shape).T
+
 def get_all_image_statistics(image_dir):
     ## Get the dimensions of all the images
     min_h, min_w, min_c = 1000000, 1000000, 1000000
