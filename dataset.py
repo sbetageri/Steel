@@ -26,7 +26,7 @@ def gen_save_masks(img_paths, img_masks, mask_dir):
         mask = get_img_masks(rle)
         path = path.split('/')
         img_id = path[-1]
-        mask_path = mask_dir + '/' + img_id
+        mask_path = mask_dir + img_id
         mask_img = Image.fromarray(mask, mode='CMYK')
         mask_img.save(mask_path)
 
