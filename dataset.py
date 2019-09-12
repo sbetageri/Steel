@@ -24,6 +24,30 @@ def generate_mask(rle, height=256, width=1600):
             mask[h, w] = 1
     return mask
 
+def build_img2mask_map(old_df):
+    img2mask = {}
+    for i in tqdm(range(len(old_df))):
+        point = old_df.iloc[i]
+        img, label = point['ImageId_ClassId'].split('_')
+        label = int(label) - 1
+        if img in img2mask:
+            val[label] = point['EncodedPixels']
+        else:
+            val = [-1] * 4
+            val[label] = point['EncodedPixels']
+            img2mask[img] = val
+    return img2mask
+
+def img2mask_to_df(img2mask):
+    new_df = pd.DataFrame()
+    values = []
+    count = 0
+    for img in img2mask:
+        values.append([img, *img2mask[img]])
+    new_df = new_df.append(values)
+    new_df = new_df.rename(columns={0: 'img_id', 1: 'mask_1', 2: 'mask_2', 3: 'mask_3', 4: 'mask_4'})
+    return new_df
+
 def mask2rle(img):
     ## Taken from https://www.kaggle.com/paulorzp/rle-functions-run-lenght-encode-decode
     '''
