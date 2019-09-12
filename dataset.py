@@ -1,6 +1,8 @@
 import sys
 
 import numpy as np
+import pandas as pd
+import tensorflow as tf
 
 from pathlib import Path
 from PIL import Image
@@ -10,6 +12,51 @@ def get_pixel_coord(pix, num_rows):
     row = (pix % num_rows) 
     col = (pix // num_rows)
     return row, col
+
+def get_img_paths(dataframe, train_dir):
+    img_paths = train_dir + dataframe['img_id']
+    return list(img_paths)
+
+def get_img_rle(dataframe):
+    masks = list(dataframe[['mask_1', 'mask_2', 'mask_3', 'mask_4']].values)
+    return masks
+
+def gen_save_masks(img_paths, img_masks, mask_dir):
+    for path, rle in tqdm(zip(img_paths, img_masks)):
+        mask = get_img_masks(rle)
+        path = path.split('/')
+        img_id = path[-1]
+        mask_path = mask_dir + '/' + img_id
+        mask_img = Image.fromarray(mask, mode='CMYK')
+        mask_img.save(mask_path)
+
+def get_img_masks(masks):
+    ## masks is a list of 4 masks
+    img_mask = []
+    for idx, mask in enumerate(masks):
+        if mask != 'nan':
+            mask = rle2mask(mask)
+        else:
+            mask = np.zeros((256, 1600))
+        img_mask.append(mask)
+    img_mask = np.stack(img_mask)
+    img_mask = img_mask.reshape((256, 1600, 4))
+    return img_mask
+
+def get_modified_df(csv_file):
+    o_df = pd.read_csv(csv_file)
+    img_mask = build_img2mask_map(o_df)
+    df = img2mask_to_df(img_mask)
+    df = df.fillna('nan')
+    return df
+
+def load_process_img(path):
+    image = tf.io.read_file(path)
+    image = tf.image.decode_jpeg(image, channels=3)
+    image = tf.image.resize(image, [256, 1600])
+    image /= 255.0  # normalize to [0,1] range
+
+    return image    
 
 def generate_mask(rle, height=256, width=1600):
     mask = np.zeros((height, width), dtype=np.uint8)
@@ -139,7 +186,21 @@ if __name__ == '__main__':
         print('Incorrect Usage')
         print('Usage : $ python dataset.py stats <img_dir_path>')
         print('<img_dir_path> is the path to the directory containing the images')
+        print('Usage : $ python dataset.py gen_masks <dataset_root_path>')
     else:
         if sys.argv[1] == 'stats':
             path = sys.argv[2]
             get_all_image_statistics(path)
+            
+        elif sys.argv[1] == 'gen_masks':
+            root_dir = sys.argv[2] + '/'
+            csv_file = root_dir + 'train.csv'
+            train_dir = root_dir + 'train/'
+            mask_dir = root_dir + 'mask/'
+            
+            print(root_dir)
+
+            df = get_modified_df(csv_file)
+            all_img_paths = get_img_paths(df, train_dir)
+            all_img_masks = get_img_rle(df)
+            gen_save_masks(all_img_paths, all_img_masks, mask_dir)
