@@ -9,11 +9,29 @@ from PIL import Image
 from tqdm import tqdm
 
 def get_pixel_coord(pix, num_rows):
+    '''Get coordinates of pixel
+    
+    :param pix: Pixel value in RLE format
+    :type pix: Int
+    :param num_rows: Height of image
+    :type num_rows: Int
+    :return: Co-ordinates of pixel
+    :rtype: (Int, Int)
+    '''
     row = (pix % num_rows) 
     col = (pix // num_rows)
     return row, col
 
 def get_img_paths(dataframe, train_dir):
+    '''Obtain path to all images
+    
+    :param dataframe: Dataframe containing image paths
+    :type dataframe: pd.DataFrame
+    :param train_dir: Directory with training images
+    :type train_dir: String
+    :return: List of image paths
+    :rtype: List
+    '''
     img_paths = train_dir + dataframe['img_id']
     return list(img_paths)
 
@@ -94,6 +112,28 @@ def img2mask_to_df(img2mask):
     new_df = new_df.append(values)
     new_df = new_df.rename(columns={0: 'img_id', 1: 'mask_1', 2: 'mask_2', 3: 'mask_3', 4: 'mask_4'})
     return new_df
+
+def get_dataset(csv_file, train_dir, mask_dir):
+    '''Build dataset of images and masks
+    
+    :param csv_file: Path to csv file with RLE labels
+    :type csv_file: String
+    :param train_dir: Path to train dir
+    :type train_dir: String
+    :param mask_dir: Path to mask dir
+    :type mask_dir: String
+    :return: Dataset of image and mask
+    :rtype: tf.data.Dataset
+    '''
+    df = get_modified_df(csv_file)
+    all_img_paths = get_img_paths(df, train_dir)
+    all_img_mask_path = get_img_paths(df, mask_dir)
+    image_ds = tf.data.Dataset.from_tensor_slices(all_img_paths)
+    image_ds = image_ds.map(load_process_img)
+    mask_ds = tf.data.Dataset.from_tensor_slices(all_img_mask_path)
+    mask_ds = mask_ds.map(load_process_img)
+    image_mask_ds = tf.data.Dataset.zip((image_ds, mask_ds))
+    return image_mask_ds
 
 def mask2rle(img):
     ## Taken from https://www.kaggle.com/paulorzp/rle-functions-run-lenght-encode-decode
