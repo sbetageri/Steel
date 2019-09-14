@@ -67,6 +67,14 @@ def get_modified_df(csv_file):
     df = img2mask_to_df(img_mask)
     df = df.fillna('nan')
     return df
+    
+def load_process_gray_img(path):
+    image = tf.io.read_file(path)
+    image = tf.image.decode_jpeg(image, channels=3)
+    image = tf.image.rgb_to_grayscale(image)
+    image = tf.image.resize(image, [256, 1600])
+    image /= 255.0  # normalize to [0,1] range
+    return image    
 
 def load_process_img(path):
     image = tf.io.read_file(path)
