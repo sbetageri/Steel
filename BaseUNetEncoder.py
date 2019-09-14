@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-lass UNetEncoder(tf.keras.Model):
+class UNetEncoder(tf.keras.Model):
     def __init__(self):
         super(UNetEncoder, self).__init__()
         
