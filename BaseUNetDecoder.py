@@ -1,3 +1,5 @@
+import tensorflow as tf
+
 class UNetDecoder(tf.keras.Model):
     def __init__(self):
         super(UNetDecoder, self).__init__()
