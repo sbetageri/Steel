@@ -26,25 +26,21 @@ class UNetDecoder(tf.keras.Model):
         x = self.ul1_t_conv(x)
         
         x = tf.concat([x, enc4], axis=3)
-        print(x.shape)
         x = self.ul1_conv1(x)
         x = self.ul1_conv2(x)
         
         x = self.ul2_t_conv(x)
         x = tf.concat([x, enc3], axis=3)
-        print(x.shape)
         x = self.ul2_conv1(x)
         x = self.ul2_conv2(x)
         
         x = self.ul3_t_conv(x)
         x = tf.concat([x, enc2], axis=3)
-        print(x.shape)
         x = self.ul3_conv1(x)
         x = self.ul3_conv2(x)
         
         x = self.ul4_t_conv(x)
         x = tf.concat([x, enc1], axis=3)
-        print(x.shape)
         x = self.ul4_conv1(x)
         x = self.ul4_conv2(x)
         
