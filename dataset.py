@@ -39,6 +39,18 @@ def get_img_rle(dataframe):
     masks = list(dataframe[['mask_1', 'mask_2', 'mask_3', 'mask_4']].values)
     return masks
 
+def gen_masks():
+    root_dir = '/Volumes/Transcend/Data/Steel/'
+    csv_file = root_dir + 'train.csv'
+    train_dir = root_dir + 'train/'
+    mask_dir = root_dir + 'mask/'
+    df = get_modified_df(csv_file)
+    img_mask = get_img_paths(df, mask_dir)
+    for path in img_mask:
+        img = Image.open(path)
+        img = np.array(img)
+        yield tf.convert_to_tensor(img)
+
 def gen_save_masks(img_paths, img_masks, mask_dir):
     for path, rle in tqdm(zip(img_paths, img_masks)):
         mask = get_img_masks(rle)
@@ -84,6 +96,17 @@ def load_process_img(path):
 
     return image    
 
+def load_process_mask(path):
+    # image = Image.open(path)
+    # image = np.array(image)
+    # image = tf.convert_to_tensor(image)
+    print(path)
+    image = tf.io.read_file(path)
+    image = tf.image.decode_image(image, channels=4)
+    image = tf.image.resize(image, [256, 1600])
+    image /= 255.0
+    return image
+
 def generate_mask(rle, height=256, width=1600):
     mask = np.zeros((height, width), dtype=np.uint8)
     rle = [int(val) for val in rle.split(' ')]
@@ -121,6 +144,21 @@ def img2mask_to_df(img2mask):
     new_df = new_df.rename(columns={0: 'img_id', 1: 'mask_1', 2: 'mask_2', 3: 'mask_3', 4: 'mask_4'})
     return new_df
 
+def gen_dataset():
+    root_dir = '/Volumes/Transcend/Data/Steel/'
+    csv_file = root_dir + 'train.csv'
+    train_dir = root_dir + 'train/'
+    mask_dir = root_dir + 'mask/'
+    df = get_modified_df(csv_file)
+    img_masks = get_img_paths(df, mask_dir)
+    img_paths = get_img_paths(df, train_dir)
+    for img_path, img_mask in zip(img_paths, img_masks):
+        img = Image.open(img_path)
+        img = np.array(img)
+        mask = Image.open(img_mask)
+        mask = np.array(mask)
+        yield tf.convert_to_tensor(img), tf.convert_to_tensor(mask)
+
 def get_dataset(csv_file, train_dir, mask_dir):
     '''Build dataset of images and masks
     
@@ -138,8 +176,9 @@ def get_dataset(csv_file, train_dir, mask_dir):
     all_img_mask_path = get_img_paths(df, mask_dir)
     image_ds = tf.data.Dataset.from_tensor_slices(all_img_paths)
     image_ds = image_ds.map(load_process_img)
-    mask_ds = tf.data.Dataset.from_tensor_slices(all_img_mask_path)
-    mask_ds = mask_ds.map(load_process_img)
+    # mask_ds = tf.data.Dataset.from_tensor_slices(all_img_mask_path)
+    # mask_ds = mask_ds.map(load_process_mask)
+    mask_ds = tf.data.Dataset.from_generator(gen_masks, (tf.float32), tf.TensorShape([256, 1600, 4]))
     image_mask_ds = tf.data.Dataset.zip((image_ds, mask_ds))
     return image_mask_ds
 
