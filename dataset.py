@@ -144,6 +144,13 @@ def img2mask_to_df(img2mask):
     new_df = new_df.rename(columns={0: 'img_id', 1: 'mask_1', 2: 'mask_2', 3: 'mask_3', 4: 'mask_4'})
     return new_df
 
+def dice(y_true, y_pred):
+    smooth = 1
+    y_true = tf.keras.backend.flatten(y_true)
+    y_pred = tf.keras.backend.flatten(y_pred)
+    intersection = tf.keras.backend.sum(y_true * y_pred)
+    return (2 * intersection + smooth) / (tf.keras.backend.sum(y_true) + tf.keras.backend.sum(y_pred) + smooth)
+
 def gen_dataset():
     root_dir = '/Volumes/Transcend/Data/Steel/'
     csv_file = root_dir + 'train.csv'
