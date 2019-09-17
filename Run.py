@@ -20,7 +20,7 @@ if __name__ == '__main__':
     
     model.compile(optimizer=optimizer,
               loss = loss_obj,
-              metrics=[iou_metric])
+              metrics=[dataset.dice])
     
     history = model.fit(img_dataset,
                         epochs=10,
