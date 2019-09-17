@@ -18,7 +18,7 @@ if __name__ == '__main__':
     tensorboard_cb = tf.keras.callbacks.TensorBoard(log_dir='./log_dir/', histogram_freq=1)
     
     model.compile(optimizer=optimizer,
-              loss = loss_obj,
+              loss = dataset.bce_dice_loss,
               metrics=[dataset.dice])
     
     history = model.fit(img_dataset,

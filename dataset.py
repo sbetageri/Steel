@@ -144,6 +144,18 @@ def img2mask_to_df(img2mask):
     new_df = new_df.rename(columns={0: 'img_id', 1: 'mask_1', 2: 'mask_2', 3: 'mask_3', 4: 'mask_4'})
     return new_df
 
+def dice_loss(y_true, y_pred):
+    smooth = 1.0
+    y_true_f = tf.keras.backend.flatten(y_true)
+    y_pred_f = tf.keras.backend.flatten(y_pred)
+    intersection = tf.keras.backend.sum(y_true * y_pred)
+    score = (2. * tf.keras.backend.sum(intersection)) 
+    score = score / (tf.keras.backend.sum(y_true_f) + tf.keras.backend.sum(y_pred_f) + smooth)
+    return 1. - score
+
+def bce_dice_loss(y_true, y_pred):
+    return tf.keras.backend.binary_crossentropy(y_true, y_pred) + dice_loss(y_true, y_pred)
+
 def dice(y_true, y_pred):
     smooth = 1
     y_true = tf.keras.backend.flatten(y_true)
