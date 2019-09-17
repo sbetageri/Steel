@@ -13,14 +13,14 @@ if __name__ == '__main__':
     
     model = UNet()
     loss_obj = tf.keras.losses.MeanSquaredError()
-    iou_metric = tf.keras.metrics.MeanIoU(num_classes=4)
+    iou_metric = tf.keras.metrics.MeanIoU(num_classes=2)
     optimizer = tf.keras.optimizers.Adam(learning_rate=1e-7)
     early_stop_cb = tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3)
     tensorboard_cb = tf.keras.callbacks.TensorBoard(log_dir='./log_dir/', histogram_freq=1)
     
     model.compile(optimizer=optimizer,
               loss = loss_obj,
-              metrics=[dataset.dice])
+              metrics=[iou_metric])
     
     history = model.fit(img_dataset,
                         epochs=10,
