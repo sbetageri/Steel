@@ -13,7 +13,7 @@ if __name__ == '__main__':
     
     model = UNet()
     loss_obj = tf.keras.losses.BinaryCrossentropy()
-    optimizer = tf.keras.optimizers.Adam()
+    optimizer = tf.keras.optimizers.Adam(learning_rate=1e-7)
     early_stop_cb = tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3)
     tensorboard_cb = tf.keras.callbacks.TensorBoard(log_dir='./log_dir/', histogram_freq=1)
     
@@ -24,3 +24,5 @@ if __name__ == '__main__':
     history = model.fit(img_dataset,
                         epochs=10,
                         callbacks=[early_stop_cb, tensorboard_cb])
+    
+    model.save('./model_weights', save_format='tf')
