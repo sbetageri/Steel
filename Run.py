@@ -20,11 +20,10 @@ if __name__ == '__main__':
     
     model.compile(optimizer=optimizer,
               loss = loss_obj,
-              metrics=[dataset.dice])
+              metrics=[iou_metric])
     
     history = model.fit(img_dataset,
                         epochs=10,
-                        metrics=[iou_metric],
                         callbacks=[early_stop_cb, tensorboard_cb])
     
     model.save('./model_weights', save_format='tf')
