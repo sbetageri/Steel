@@ -164,7 +164,7 @@ def dice(y_true, y_pred):
     return (2 * intersection + smooth) / (tf.keras.backend.sum(y_true) + tf.keras.backend.sum(y_pred) + smooth)
 
 def gen_dataset():
-    root_dir = '/Volumes/Transcend/Data/Steel/'
+    root_dir = '/home/srirakshith/Data/steel/'
     csv_file = root_dir + 'train.csv'
     train_dir = root_dir + 'train/'
     mask_dir = root_dir + 'mask/'
