@@ -12,7 +12,7 @@ if __name__ == '__main__':
     img_dataset = img_dataset.batch(2)
     
     model = UNet()
-    loss_obj = tf.keras.losses.LogCosh()
+    loss_obj = tf.keras.losses.BinaryCrossentropy()
     iou_metric = tf.keras.metrics.MeanIoU(num_classes=2)
     optimizer = tf.keras.optimizers.Adam()
     early_stop_cb = tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3)
