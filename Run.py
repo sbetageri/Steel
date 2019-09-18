@@ -12,7 +12,7 @@ if __name__ == '__main__':
     img_dataset = img_dataset.batch(2)
     
     model = UNet()
-    loss_obj = tf.keras.losses.LogCosh()
+    loss_obj = tf.keras.losses.BinaryCrossEntropy()
     iou_metric = tf.keras.metrics.MeanIoU(num_classes=2)
     optimizer = tf.keras.optimizers.Adam(learning_rate=1e-7)
     early_stop_cb = tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3)
@@ -23,7 +23,7 @@ if __name__ == '__main__':
               metrics=[dataset.dice])
     
     history = model.fit(img_dataset,
-                        epochs=10,
+                        epochs=30,
                         callbacks=[early_stop_cb, tensorboard_cb])
     
     model.save('./model_weights', save_format='tf')
