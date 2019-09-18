@@ -173,10 +173,10 @@ def gen_dataset():
     img_paths = get_img_paths(df, train_dir)
     for img_path, img_mask in zip(img_paths, img_masks):
         img = Image.open(img_path)
-        img = img.resize((64, 400))
+        img = img.resize((400, 64))
         img = np.array(img)
         mask = Image.open(img_mask)
-        mask = mask.resize((64, 400))
+        mask = mask.resize((400, 64))
         mask = np.array(mask)
         yield tf.convert_to_tensor(img), tf.convert_to_tensor(mask)
 
