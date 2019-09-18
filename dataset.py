@@ -179,7 +179,7 @@ def gen_dataset():
         mask = Image.open(img_mask)
         mask = mask.resize((400, 64))
         mask = np.array(mask)
-        mask = np.true_divide(mask, 255.0)
+        # mask = np.true_divide(mask, 255.0)
         # yield img, mask
         yield tf.convert_to_tensor(img), tf.convert_to_tensor(mask)
 
