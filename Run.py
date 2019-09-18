@@ -14,7 +14,7 @@ if __name__ == '__main__':
     model = UNet()
     loss_obj = tf.keras.losses.LogCosh()
     iou_metric = tf.keras.metrics.MeanIoU(num_classes=2)
-    optimizer = tf.keras.optimizers.Adam(learning_rate=1e-7)
+    optimizer = tf.keras.optimizers.Adam()
     early_stop_cb = tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3)
     tensorboard_cb = tf.keras.callbacks.TensorBoard(log_dir='./log_dir/', histogram_freq=1)
     
