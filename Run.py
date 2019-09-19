@@ -29,4 +29,4 @@ if __name__ == '__main__':
                         epochs=30,
                         callbacks=[early_stop_cb, tensorboard_cb])
     
-    model.save('./model_weights_64_400', save_format='tf')
+    model.save('./model_weights_att_64_400', save_format='tf')
