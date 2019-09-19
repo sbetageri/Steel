@@ -5,7 +5,7 @@ from BaseUNetAttDecoder import UNetAttentionDecoder
 
 class AttUNet(tf.keras.Model):
     def __init__(self):
-        super(UNet, self).__init__()
+        super(AttUNet, self).__init__()
     
         self.encoder = UNetEncoder()
         self.decoder = UNetAttentionDecoder()
