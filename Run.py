@@ -12,7 +12,7 @@ if __name__ == '__main__':
                                                 tf.TensorShape([128, 800, 4])))
     img_dataset = img_dataset.batch(2)
     
-    model = AttUNet()
+    model = UNet()
     loss_obj = tf.keras.losses.LogCosh()
     iou_metric = tf.keras.metrics.MeanIoU(num_classes=2)
     optimizer = tf.keras.optimizers.Adam()
