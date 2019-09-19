@@ -50,4 +50,4 @@ class UNetAttentionDecoder(tf.keras.Model):
         
         x = self.ul4_conv3(x)
 
-        return x, enc4
+        return x
