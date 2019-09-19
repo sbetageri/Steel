@@ -7,8 +7,8 @@ from BaseUNet import UNet
 if __name__ == '__main__':
     img_dataset = tf.data.Dataset.from_generator(dataset.gen_dataset, 
                                             (tf.float32, tf.float32), 
-                                            (tf.TensorShape([64, 400, 3]), 
-                                                tf.TensorShape([64, 400, 4])))
+                                            (tf.TensorShape([256, 1600, 3]), 
+                                                tf.TensorShape([256, 1600, 4])))
     img_dataset = img_dataset.batch(2)
     
     model = UNet()
