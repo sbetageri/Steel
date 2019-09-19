@@ -3,6 +3,7 @@ import dataset
 import tensorflow as tf
 
 from BaseUNet import UNet
+from BaseUNetAtt import AttUNet
 
 if __name__ == '__main__':
     img_dataset = tf.data.Dataset.from_generator(dataset.gen_dataset, 
@@ -11,7 +12,7 @@ if __name__ == '__main__':
                                                 tf.TensorShape([64, 400, 4])))
     img_dataset = img_dataset.batch(2)
     
-    model = UNet()
+    model = AttUNet()
     loss_obj = tf.keras.losses.LogCosh()
     iou_metric = tf.keras.metrics.MeanIoU(num_classes=2)
     optimizer = tf.keras.optimizers.Adam()
