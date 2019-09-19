@@ -164,7 +164,9 @@ def dice(y_true, y_pred):
     return (2 * intersection + smooth) / (tf.keras.backend.sum(y_true) + tf.keras.backend.sum(y_pred) + smooth)
 
 def gen_dataset():
-    root_dir = '/home/srirakshith/Data/steel/'
+    ub_root_dir = '/home/srirakshith/Data/steel/'
+    mac_root_dir = '/Volumes/Transcend/Data/Steel/'
+    root_dir = ub_root_dir
     csv_file = root_dir + 'train.csv'
     train_dir = root_dir + 'train/'
     mask_dir = root_dir + 'mask/'
@@ -173,9 +175,11 @@ def gen_dataset():
     img_paths = get_img_paths(df, train_dir)
     for img_path, img_mask in zip(img_paths, img_masks):
         img = Image.open(img_path)
+        img = img.resize((400, 64))
         img = np.array(img)
         img = np.true_divide(img, 255.0)
         mask = Image.open(img_mask)
+        mask = mask.resize((400, 64))
         mask = np.array(mask)
         # mask = np.true_divide(mask, 255.0)
         # yield img, mask
