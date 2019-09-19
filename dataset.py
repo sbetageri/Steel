@@ -175,11 +175,11 @@ def gen_dataset():
     img_paths = get_img_paths(df, train_dir)
     for img_path, img_mask in zip(img_paths, img_masks):
         img = Image.open(img_path)
-        img = img.resize((400, 64))
+        img = img.resize((800, 128))
         img = np.array(img)
         img = np.true_divide(img, 255.0)
         mask = Image.open(img_mask)
-        mask = mask.resize((400, 64))
+        mask = mask.resize((800, 128))
         mask = np.array(mask)
         # mask = np.true_divide(mask, 255.0)
         # yield img, mask

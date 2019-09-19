@@ -8,8 +8,8 @@ from BaseUNetAtt import AttUNet
 if __name__ == '__main__':
     img_dataset = tf.data.Dataset.from_generator(dataset.gen_dataset, 
                                             (tf.float32, tf.float32), 
-                                            (tf.TensorShape([64, 400, 3]),
-                                                tf.TensorShape([64, 400, 4])))
+                                            (tf.TensorShape([128, 800, 3]),
+                                                tf.TensorShape([128, 800, 4])))
     img_dataset = img_dataset.batch(2)
     
     model = AttUNet()
@@ -29,4 +29,4 @@ if __name__ == '__main__':
                         epochs=30,
                         callbacks=[early_stop_cb, tensorboard_cb])
     
-    model.save('./model_weights_att_64_400', save_format='tf')
+    model.save('./model_weights_128_800', save_format='tf')
