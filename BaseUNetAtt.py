@@ -3,7 +3,7 @@ import tensorflow as tf
 from BaseUNetEncoder import UNetEncoder
 from BaseUNetAttDecoder import UNetAttentionDecoder
 
-class UNet(tf.keras.Model):
+class AttUNet(tf.keras.Model):
     def __init__(self):
         super(UNet, self).__init__()
     
