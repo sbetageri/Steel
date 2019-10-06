@@ -1,7 +1,7 @@
 import tensorflow as tf
 
-from BaseUNetEncoder import UNetEncoder
-from BaseUNetDecoder import UNetDecoder
+from models.BaseUNetEncoder import UNetEncoder
+from models.BaseUNetDecoder import UNetDecoder
 
 class UNet(tf.keras.Model):
     def __init__(self):

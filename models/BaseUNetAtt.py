@@ -1,7 +1,7 @@
 import tensorflow as tf
 
-from BaseUNetEncoder import UNetEncoder
-from BaseUNetAttDecoder import UNetAttentionDecoder
+from models.BaseUNetEncoder import UNetEncoder
+from models.BaseUNetAttDecoder import UNetAttentionDecoder
 
 class AttUNet(tf.keras.Model):
     def __init__(self):

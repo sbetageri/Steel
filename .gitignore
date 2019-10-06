@@ -4,3 +4,4 @@
 __pycache__
 log_dir/*
 .idea/*
+data.py

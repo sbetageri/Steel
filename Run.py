@@ -1,19 +1,24 @@
 import dataset
+import DataGen
+import data
 
 import tensorflow as tf
 
-from BaseUNet import UNet
-from BaseUNetAtt import AttUNet
+from models.BaseUNet import UNet
+from models.BaseUNetAtt import AttUNet
 
 if __name__ == '__main__':
-    img_dataset = tf.data.Dataset.from_generator(dataset.gen_dataset, 
-                                            (tf.float32, tf.float32), 
-                                            (tf.TensorShape([128, 800, 3]),
-                                                tf.TensorShape([128, 800, 4])))
-    img_dataset = img_dataset.batch(2)
+    # img_dataset = tf.data.Dataset.from_generator(dataset.gen_dataset,
+    #                                         (tf.float32, tf.float32),
+    #                                         (tf.TensorShape([128, 800, 3]),
+    #                                             tf.TensorShape([128, 800, 4])))
+
+    # img_dataset = img_dataset.batch(2)
+
+    img_dataset = DataGen.DataGenerator(data.preproc_train_csv, data.train_dir)
     
     model = UNet()
-    loss_obj = tf.keras.losses.LogCosh()
+    loss_obj = tf.keras.losses.BinaryCrossentropy()
     iou_metric = tf.keras.metrics.MeanIoU(num_classes=2)
     optimizer = tf.keras.optimizers.Adam()
     reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.2,
@@ -25,8 +30,8 @@ if __name__ == '__main__':
               loss = loss_obj,
               metrics=[dataset.dice])
     
-    history = model.fit(img_dataset,
+    history = model.fit_generator(img_dataset,
                         epochs=30,
                         callbacks=[early_stop_cb, tensorboard_cb])
     
-    model.save('./model_weights_128_800', save_format='tf')
+    model.save('./model_weights_256_400', save_format='tf')

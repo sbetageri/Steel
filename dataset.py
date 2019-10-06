@@ -273,7 +273,7 @@ def get_all_image_statistics(image_dir):
         avg_w = (avg_w * (count - 1) + w) / count
         avg_c = (avg_c * (count - 1) + c) / count
         
-    print('Number of images : ', idx)
+    print('Number of images : ', count)
     
     print('###############################')
     print('Average stats')
