@@ -19,7 +19,7 @@ if __name__ == '__main__':
     
     model = UNet()
     loss_obj = tf.keras.losses.BinaryCrossentropy()
-    iou_metric = tf.keras.metrics.MeanIoU(num_classes=2)
+    iou_metric = tf.keras.metrics.MeanIoU(num_classes=4)
     accuracy_metric = tf.keras.metrics.Accuracy()
     optimizer = tf.keras.optimizers.Adam()
     reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.2,
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     
     model.compile(optimizer=optimizer,
               loss = loss_obj,
-              metrics=[dataset.dice, accuracy_metric])
+              metrics=[dataset.dice, accuracy_metric, iou_metric])
     
     history = model.fit_generator(img_dataset,
                         epochs=3,
