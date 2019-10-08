@@ -1,12 +1,14 @@
 import tensorflow as tf
 import pandas as pd
 import numpy as np
-import math
+import data
+
+from tqdm import tqdm
 
 from PIL import Image
 
 class DataGenerator(tf.keras.utils.Sequence):
-    def __init__(self, csv_file, img_dir, is_test=False):
+    def __init__(self, csv_file, img_dir, is_test=False, gen_masks=False):
         '''
         Initialises the dataset
         :param csv_file: Path to csv_file.
@@ -19,6 +21,10 @@ class DataGenerator(tf.keras.utils.Sequence):
         self.img_dir = img_dir
         self.is_test = is_test
         self.orig_shape = (1600, 256)
+        if gen_masks == True:
+            for i in tqdm(range(len(self.df))):
+                self._save_mask(i)
+
 
     def __len__(self):
         '''
@@ -114,6 +120,14 @@ class DataGenerator(tf.keras.utils.Sequence):
         masks = masks.reshape(256, 1600, 4)
         return masks
 
+    def _save_mask(self, idx):
+        ## get img id
+        img_id = self.df.iloc[idx]['img_id']
+        img_id = ''.join(img_id.split('.')[:-1])
+        masks = self.get_img_masks(idx)
+        mask_path = data.train_mask_dir + img_id
+        np.save(mask_path, masks)
+
     def __getitem__(self, idx):
         '''
         Obtain the split of images and masks
@@ -121,6 +135,7 @@ class DataGenerator(tf.keras.utils.Sequence):
         :return: Training images and labels
         '''
 
+        assert False
         img_path = self.get_img_path(idx)
 
         ## img is an np array
