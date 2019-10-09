@@ -126,7 +126,7 @@ class DataGenerator(tf.keras.utils.Sequence):
         img_id = ''.join(img_id.split('.')[:-1])
         masks = self.get_img_masks(idx)
         mask_path = data.train_mask_dir + img_id
-        np.save(mask_path, masks)
+        np.savez_compressed(mask_path, a=masks)
 
     def __getitem__(self, idx):
         '''
